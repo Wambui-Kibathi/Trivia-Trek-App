@@ -77,5 +77,13 @@ useEffect(() => {
     setAnswers(updatedAnswers);
   };
 
+  const handlePause = () => setPaused(true);
+  const handleResume = () => setPaused(false);
+  const handleNext = () => {
+    if (current < questions.length - 1) setCurrent(current + 1);
+  };
+  const handlePrev = () => {
+    if (current > 0) setCurrent(current - 1);
+  };
 
 }
