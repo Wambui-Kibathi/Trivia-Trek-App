@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
-
 
 // API questions data
-const apiQuestions = [
+const apiQuestionsRaw = [
   {
     type: 'multiple',
     difficulty: 'hard',
@@ -84,6 +82,94 @@ const apiQuestions = [
     incorrect_answers: ['France', 'England', 'Portugal'],
   },
 ];
+
+// Map API questions to the app's structure
+const apiQuestions = apiQuestionsRaw.map(q => {
+  const allChoices = [q.correct_answer, ...q.incorrect_answers];
+  const shuffledChoices = allChoices.sort(() => Math.random() - 0.5);
+  return {
+    text: q.question, // mapped as text for consistent display
+    choices: shuffledChoices,
+    answer: shuffledChoices.indexOf(q.correct_answer),
+    category: q.category,
+    level: q.difficulty.charAt(0).toUpperCase() + q.difficulty.slice(1),
+  };
+});
+
+export default function QuestionsCard({ quiz, onBack, onAnswer }) {
+  const [current, setCurrent] = useState(0);
+  const [selected, setSelected] = useState(null);
+  const [showAnswer, setShowAnswer] = useState(false);
+
+  if (!quiz) return null;
+
+  // Filter questions by quiz category
+  const filteredQuestions = apiQuestions.filter(q =>
+    q.category === quiz.title || q.category === quiz.title.replace('&', '&amp;')
+  );
+  const questionsToUse = filteredQuestions.length > 0 ? filteredQuestions : apiQuestions;
+  const q = questionsToUse[current];
+  if (!q) return <div>No questions available for this quiz.</div>;
+
+  const options = q.choices;
+
+  function handleOption(option) {
+    const answerIndex = options.indexOf(option);
+    setSelected(answerIndex);
+    setShowAnswer(true);
+    if (typeof onAnswer === 'function') {
+      onAnswer(answerIndex); // send selected answer index to parent if needed
+    }
+  }
+
+  function handleNext() {
+    setSelected(null);
+    setShowAnswer(false);
+    setCurrent(prev => prev + 1);
+  }
+
+  return (
+    <div className="questions-card">
+      <button onClick={onBack}>Back to Quiz List</button>
+      <h3>{quiz.title}</h3>
+      <div>
+        {/* display q.text instead of q.question, as your mapped data uses text */}
+        <p dangerouslySetInnerHTML={{ __html: q.text }} />
+        <ul>
+          {options.map((opt, idx) => (
+            <li key={opt}>
+              <button
+                disabled={showAnswer}
+                onClick={() => handleOption(opt)}
+                style={{
+                  background: showAnswer && idx === q.answer ? '#aaffaa' : '',
+                  border: selected === idx ? '2px solid #333' : '',
+                }}
+                dangerouslySetInnerHTML={{ __html: opt }}
+              />
+            </li>
+          ))}
+        </ul>
+        {showAnswer && (
+          <div>
+            {selected === q.answer ? (
+              'Correct!'
+            ) : (
+              `Wrong! Correct answer: ${options[q.answer]}`
+            )}
+            {current < questionsToUse.length - 1 ? (
+              <button onClick={handleNext}>Next Question</button>
+            ) : (
+              <div style={{ marginTop: '1em' }}>
+                <span>End of Quiz</span>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default function QuestionsCard({ quiz, onBack }) {
   const [current, setCurrent] = useState(0);
