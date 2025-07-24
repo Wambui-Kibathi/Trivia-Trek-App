@@ -1,4 +1,4 @@
-export function ResultsPage() {
+export function ResultsPage({ score, total, wrongAnswers, onRestart }) {
     return (
         <>
         </>
