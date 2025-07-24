@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export function ResultsPage() {
+export function ResultsPage({ onRegister }) {
     const [username, setUsername] = useState('');
     const [error, setError] = useState('');
 
