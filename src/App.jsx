@@ -20,4 +20,38 @@ function App() {
   const [paused, setPaused] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
 
-  
+useEffect(() => {
+    let timer = null;
+    if (!paused && page === 'quiz') {
+      timer = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            setPage('results');
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [paused, page]);
+
+  const handleNavigate = (targetPage) => {
+    if (targetPage === 'quiz') {
+      if (!user) {
+        setPage('register');
+      } else {
+        setPage('quiz-list');
+      }
+    } else {
+      setPage(targetPage);
+    }
+  };
+
+  const handleRegister = (username) => {
+    setUser(username);
+    setPage('quiz-list');
+  };
+
+}
