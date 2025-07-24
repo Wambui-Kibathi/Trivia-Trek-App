@@ -54,4 +54,28 @@ useEffect(() => {
     setPage('quiz-list');
   };
 
+  const handleSelectQuiz = async (quiz, level = 'easy', useApi = false) => {
+    setSelectedQuiz(quiz);
+    setLevel(level);
+    let selectedQuestions;
+    if (useApi) {
+      selectedQuestions = await fetchApiQuestions();
+    } else {
+      selectedQuestions = questionsData.filter(q => q.category === quiz.title && q.level === level);
+    }
+    setQuestions(selectedQuestions);
+    setCurrent(0);
+    setAnswers([]);
+    setTimeLeft(60);
+    setPaused(false);
+    setPage('quiz');
+  };
+
+  const handleAnswer = (selectedAnswer) => {
+    const updatedAnswers = [...answers];
+    updatedAnswers[current] = selectedAnswer;
+    setAnswers(updatedAnswers);
+  };
+
+
 }
