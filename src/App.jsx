@@ -85,5 +85,24 @@ useEffect(() => {
   const handlePrev = () => {
     if (current > 0) setCurrent(current - 1);
   };
+  const handleRestart = () => setPage('quiz-list');
+
+  const renderQuizPage = () => (
+    <>
+      <GameControls
+        onPause={handlePause}
+        onResume={handleResume}
+        onNext={handleNext}
+        onPrev={handlePrev}
+        isPaused={paused}
+        timeLeft={timeLeft}
+      />
+      <QuestionsCard
+        quiz={selectedQuiz}
+        onBack={() => setPage('quiz-list')}
+        onAnswer={handleAnswer} // Pass handleAnswer callback
+      />
+    </>
+  );
 
 }
