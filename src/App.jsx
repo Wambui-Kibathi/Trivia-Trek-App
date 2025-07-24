@@ -118,5 +118,31 @@ useEffect(() => {
       return null;
     }).filter(Boolean);
 
-    }
+
+const score = questions.reduce((acc, q, i) => {
+      return acc + (answers[i] === q.correct_answer ? 1 : 0);
+    }, 0);
+
+    return (
+      <ResultsPage
+        score={score}
+        total={questions.length}
+        wrongAnswers={wrongAnswers}
+        onRestart={handleRestart}
+      />
+    );
+  };
+
+  return (
+    <div className="container">
+      <NavBar onNavigate={handleNavigate} />
+      {page === 'register' && <RegisterForm onRegister={handleRegister} />}
+      {page === 'quiz-list' && <QuizList onSelectQuiz={handleSelectQuiz} />}
+      {page === 'quiz' && renderQuizPage()}
+      {page === 'results' && renderResults()}
+      {page === 'about' && <About />}
+    </div>
+  );
 }
+
+export default App;
