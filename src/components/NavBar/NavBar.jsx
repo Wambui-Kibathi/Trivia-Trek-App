@@ -1,7 +1,7 @@
 export function NavBar () {
     return (
         <>
-        
+
         </>
-    )
+    );
 }
