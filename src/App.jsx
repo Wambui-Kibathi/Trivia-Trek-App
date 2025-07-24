@@ -100,9 +100,23 @@ useEffect(() => {
       <QuestionsCard
         quiz={selectedQuiz}
         onBack={() => setPage('quiz-list')}
-        onAnswer={handleAnswer} // Pass handleAnswer callback
+        onAnswer={handleAnswer} 
       />
     </>
   );
+    const renderResults = () => {
+    const wrongAnswers = questions.map((q, i) => {
+      const userAnsIdx = answers[i];
+      const correctAnsIdx = q.answer;
+      if (userAnsIdx !== correctAnsIdx) {
+        return {
+          question: q.text,
+          userAnswer: q.choices[userAnsIdx] || 'No answer',
+          correctAnswer: q.choices[correctAnsIdx]
+        };
+      }
+      return null;
+    }).filter(Boolean);
 
+    }
 }
